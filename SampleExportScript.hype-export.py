@@ -10,6 +10,7 @@ current_script_version = 4
 version_info_url = "http://localhost/~username/latest_script_version.txt" # only returns a version number
 download_url = "http://localhost/~username/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
+defaults_bundle_identifier = "com.yourcompany.SampleExportScript"
 
 # html insertions
 insert_at_head_start = """
@@ -140,14 +141,14 @@ def main():
 		
 		last_check_timestamp = None
 		try:
-			last_check_timestamp = subprocess.check_output(["defaults", "read", "com.tumult.SampleExportScript", "last_check_timestamp"]).strip()
+			last_check_timestamp = subprocess.check_output(["defaults", "read", defaults_bundle_identifier, "last_check_timestamp"]).strip()
 		except:
 			pass
 
 		try:
 			timestamp_now = subprocess.check_output(["date", "+%s"]).strip()
 			if (last_check_timestamp == None) or ((int(timestamp_now) - int(last_check_timestamp)) > minimum_update_check_duration_in_seconds):
-				subprocess.check_output(["defaults", "write", "com.tumult.SampleExportScript", "last_check_timestamp", timestamp_now])
+				subprocess.check_output(["defaults", "write", defaults_bundle_identifier, "last_check_timestamp", timestamp_now])
 				latest_script_version = int(urllib2.urlopen(version_info_url).read().strip())
 				if latest_script_version > current_script_version:
 					print json.dumps({"result" : {"url" : download_url, "from_version" : str(current_script_version), "to_version" : str(latest_script_version)}})
