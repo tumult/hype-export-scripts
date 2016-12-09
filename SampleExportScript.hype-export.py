@@ -7,10 +7,9 @@ import distutils.util
 
 # update info
 current_script_version = 4
-version_info_url = "http://localhost/~username/latest_script_version.txt" # only returns a version number
-download_url = "http://localhost/~username/" # gives a user info to download and install
+version_info_url = "http://localhost/~deutschj/latest_script_version.txt" # only returns a version number
+download_url = "http://localhost/~deutschj/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
-defaults_bundle_identifier = "com.yourcompany.SampleExportScript"
 
 # html insertions
 insert_at_head_start = """
@@ -43,6 +42,7 @@ class HypeURLType:
 
 def main():
 	parser = argparse.ArgumentParser()
+	parser.add_argument('--get_arguments', action='store_true')
 	parser.add_argument('--get_options', action='store_true')
 	parser.add_argument('--get_file_extension', action='store_true')
 	parser.add_argument('--replace_url')
@@ -50,11 +50,33 @@ def main():
 	parser.add_argument('--is_reference', default="False")
 	parser.add_argument('--modify_staging_path')
 	parser.add_argument('--destination_path')
+	parser.add_argument('--html_filename')
+	parser.add_argument('--main_container_width')
+	parser.add_argument('--main_container_height')
 	parser.add_argument('--is_preview', default="False")
 	parser.add_argument('--check_for_updates', action='store_true')
-	args = parser.parse_args()
 	
+	#custom defined arguments
+	parser.add_argument('--clickTag', default="")
 	
+	args, unknown = parser.parse_known_args()
+	
+
+	## --get_file_extension
+	##		return arguments to be presented in the Hype UI as a dictionary
+	##		'document_arguments' should be an array of keys, these will be passed to subsequent calls via --key value
+	##		'extra_element_actions' should be an array of dictionaries
+	##			'label': string that is the user presented name
+	##			'function': javascript function to call if this action is triggered, just the name of it
+	##			'arguments': array of dictionaries that represent arguments passed into the function
+	##				'label': string that is presented to Hype UI
+	##				'type': string that is either "String" (will be quoted and escaped) or "Expression" (passed directly to function argument as-is)
+	if args.get_arguments:
+		arguments = { "document_arguments" : ["clickTag"], "extra_actions" : [ {"label" : "Ad Exit", "function" : "alert", "arguments":[{"label":"Alert", "type": "String"}]}, {"label" : "Expand", "function" : "console.log", "arguments":[{"label":"1stMessage", "type": "Expression"}, {"label":"2ndMessage", "type": "String"}]}]}
+		print json.dumps({"result" : arguments})
+		sys.exit(0)
+
+
 	## --get_file_extension
 	##		return a dictionary of options
 	if args.get_options:
@@ -120,11 +142,12 @@ def main():
 		import os
 		is_preview = bool(distutils.util.strtobool(args.is_preview))
 		
-		index_path = os.path.join(args.modify_staging_path, "index.html")
+		index_path = os.path.join(args.modify_staging_path, args.html_filename)
 		perform_html_additions(index_path)
 
 		if is_preview == True:
 			import shutil
+			shutil.rmtree(args.destination_path, ignore_errors=True)
 			shutil.move(args.modify_staging_path, args.destination_path)
 			print json.dumps({"result" : True})
 		else:
@@ -141,14 +164,14 @@ def main():
 		
 		last_check_timestamp = None
 		try:
-			last_check_timestamp = subprocess.check_output(["defaults", "read", defaults_bundle_identifier, "last_check_timestamp"]).strip()
+			last_check_timestamp = subprocess.check_output(["defaults", "read", "com.tumult.SampleExportScript", "last_check_timestamp"]).strip()
 		except:
 			pass
 
 		try:
 			timestamp_now = subprocess.check_output(["date", "+%s"]).strip()
 			if (last_check_timestamp == None) or ((int(timestamp_now) - int(last_check_timestamp)) > minimum_update_check_duration_in_seconds):
-				subprocess.check_output(["defaults", "write", defaults_bundle_identifier, "last_check_timestamp", timestamp_now])
+				subprocess.check_output(["defaults", "write", "com.tumult.SampleExportScript", "last_check_timestamp", timestamp_now])
 				latest_script_version = int(urllib2.urlopen(version_info_url).read().strip())
 				if latest_script_version > current_script_version:
 					print json.dumps({"result" : {"url" : download_url, "from_version" : str(current_script_version), "to_version" : str(latest_script_version)}})
