@@ -148,9 +148,10 @@ def main():
 		index_path = os.path.join(args.modify_staging_path, args.html_filename)
 		perform_html_additions(index_path)
 
+		import shutil
+		shutil.rmtree(args.destination_path, ignore_errors=True)
+		
 		if is_preview == True:
-			import shutil
-			shutil.rmtree(args.destination_path, ignore_errors=True)
 			shutil.move(args.modify_staging_path, args.destination_path)
 			print json.dumps({"result" : True})
 		else:
