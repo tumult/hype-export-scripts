@@ -45,18 +45,19 @@ class HypeURLType:
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--get_arguments', action='store_true')
 	parser.add_argument('--get_options', action='store_true')
-	parser.add_argument('--get_file_extension', action='store_true')
+
 	parser.add_argument('--replace_url')
 	parser.add_argument('--url_type')
 	parser.add_argument('--is_reference', default="False")
+
 	parser.add_argument('--modify_staging_path')
 	parser.add_argument('--destination_path')
 	parser.add_argument('--html_filename')
 	parser.add_argument('--main_container_width')
 	parser.add_argument('--main_container_height')
 	parser.add_argument('--is_preview', default="False")
+
 	parser.add_argument('--check_for_updates', action='store_true')
 	
 	#custom defined arguments
@@ -65,8 +66,24 @@ def main():
 	args, unknown = parser.parse_known_args()
 	
 
-	## --get_file_extension
-	##		return arguments to be presented in the Hype UI as a dictionary
+	## --get_options
+	##		return arguments to be presented in the Hype UI as a dictionary:
+	##		'export_options' is a dictionary of key/value pairs that make modifications to Hype's export/preview system. Some useful ones:
+	##			'exportShouldInlineHypeJS' : boolean
+	##			'exportShouldInlineDocumentLoader' : boolean
+	##			'exportShouldUseExternalRuntime' : boolean
+	##			'exportExternalRuntimeURL' : string
+	##			'exportShouldSaveHTMLFile' : boolean
+	##			'indexTitle' : string
+	##			'exportShouldBustBrowserCaching' : boolean
+	##			'exportShouldIncludeTextContents' : boolean
+	##			'exportShouldIncludePIE' : boolean
+	##			'exportSupportInternetExplorer6789' : boolean
+	##			'initialSceneIndex' : integer
+	##		'save_options' is a dictionary of key/value pairs that for determining when/how to export. valid keys:
+	##			'file_extension' : the final extension when exported (ex. "zip")
+	##			'allows_export' : should show up in the File > Export as HTML5 menu and Advanced Export
+	##			'allows_preview' : should show up in the Preview menu, if so --is_preview True is passed into the --modify_staging_path call
 	##		'document_arguments' should be an array of keys, these will be passed to subsequent calls via --key value
 	##		'extra_element_actions' should be an array of dictionaries
 	##			'label': string that is the user presented name
@@ -74,37 +91,47 @@ def main():
 	##			'arguments': array of dictionaries that represent arguments passed into the function
 	##				'label': string that is presented to Hype UI
 	##				'type': string that is either "String" (will be quoted and escaped) or "Expression" (passed directly to function argument as-is)
-	if args.get_arguments:
-		arguments = { "document_arguments" : ["clickTag"], "extra_actions" : [ {"label" : "Ad Exit", "function" : "alert", "arguments":[{"label":"Alert", "type": "String"}]}, {"label" : "Expand", "function" : "console.log", "arguments":[{"label":"1stMessage", "type": "Expression"}, {"label":"2ndMessage", "type": "String"}]}]}
-		print json.dumps({"result" : arguments})
-		sys.exit(0)
+	if args.get_options:		
+		def export_options():
+			return {
+				"exportShouldInlineHypeJS" : False,
+				"exportShouldInlineDocumentLoader" : False,
+				"exportShouldUseExternalRuntime" : False,
+				#"exportExternalRuntimeURL" : "",
+				"exportShouldSaveHTMLFile" : True,
+				"exportShouldNameAsIndexDotHTML" : True,
+				#"indexTitle" : "",
+				"exportShouldBustBrowserCaching" : False,
+				"exportShouldIncludeTextContents" : False,
+				"exportShouldIncludePIE" : True,
+				"exportSupportInternetExplorer6789" : True,
+				#"initialSceneIndex" : 0,
+			}
 
-
-	## --get_file_extension
-	##		return a dictionary of options
-	if args.get_options:
-		options = {}
-		options['exportShouldInlineHypeJS'] = False
-		options['exportShouldInlineDocumentLoader'] = False
-		options['exportShouldUseExternalRuntime'] = False
-		#options['exportExternalRuntimeURL'] = "";
-		options['exportShouldSaveHTMLFile'] = True
-		options['exportShouldNameAsIndexDotHTML'] = True
-		#options['indexTitle'] = ""
-		options['exportShouldBustBrowserCaching'] = False
-		options['exportShouldIncludeTextContents'] = False
-		options['exportShouldIncludePIE'] = True
-		options['exportSupportInternetExplorer6789'] = True
-		#options['initialSceneIndex'] = 0
+		def save_options():
+			return {
+				"file_extension" : "zip",
+				"allows_export" : False,
+				"allows_preview" : True,
+			}
+	
+		def document_arguments():
+			return ["clickTag"];
 		
+		def extra_actions():
+			return [
+				{"label" : "Ad Exit", "function" : "alert", "arguments":[{"label":"Alert", "type": "String"}]},
+				{"label" : "Expand", "function" : "console.log", "arguments":[{"label":"1stMessage", "type": "Expression"}, {"label":"2ndMessage", "type": "String"}]}
+			]
+		
+		options = {
+			"export_options" : export_options(),
+			"save_options" : save_options(),
+			"document_arguments" : document_arguments(),
+			"extra_actions" : extra_actions(),
+		}
+	
 		print json.dumps({"result" : options})
-		sys.exit(0)
-
-
-	## --get_file_extension
-	##		return a string
-	elif args.get_file_extension:
-		print json.dumps({"result" : "zip"})
 		sys.exit(0)
 
 
@@ -135,7 +162,7 @@ def main():
 		sys.exit(0)
 
 
-	## --modify_staging_path [filepath] --destination_path [filepath] --is_preview [True|False]
+	## --modify_staging_path [filepath] --destination_path [filepath] --html_filename [filename.html] --main_container_width [number] --main_container_height [number] --is_preview [True|False]
 	##		return True if you moved successfully to the destination_path, otherwise don't return anything and Hype will make the move
 	##		make any changes you'd like before the save is complete
 	##		for example, if you are a zip, you need to zip and write to the destination_path
@@ -211,7 +238,6 @@ def perform_html_additions(index_path):
 
 	with open(index_path, 'w') as target_file:
 		target_file.write(index_contents)
-
 
 
 # UTILITIES
