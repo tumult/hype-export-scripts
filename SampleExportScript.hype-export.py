@@ -85,7 +85,7 @@ def main():
 	##			'allows_export' : should show up in the File > Export as HTML5 menu and Advanced Export
 	##			'allows_preview' : should show up in the Preview menu, if so --is_preview True is passed into the --modify_staging_path call
 	##		'document_arguments' should be an array of keys, these will be passed to subsequent calls via --key value
-	##		'extra_element_actions' should be an array of dictionaries
+	##		'extra_actions' should be an array of dictionaries
 	##			'label': string that is the user presented name
 	##			'function': javascript function to call if this action is triggered, just the name of it
 	##			'arguments': array of dictionaries that represent arguments passed into the function
