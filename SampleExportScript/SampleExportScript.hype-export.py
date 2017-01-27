@@ -111,7 +111,7 @@ def main():
 		def save_options():
 			return {
 				"file_extension" : "zip",
-				"allows_export" : False,
+				"allows_export" : True,
 				"allows_preview" : True,
 			}
 	
