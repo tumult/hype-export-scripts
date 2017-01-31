@@ -18,6 +18,9 @@ defaults_bundle_identifier = "com.yourcompany.SampleExportScript"
 insert_at_head_start = """
 <!-- some stuff at head start 1 -->
 <!-- some stuff at head start 2 -->
+<script>
+	window.clickTag = "${clickTag}";
+</script>
 """
 
 insert_at_head_end = """
@@ -53,15 +56,10 @@ def main():
 
 	parser.add_argument('--modify_staging_path')
 	parser.add_argument('--destination_path')
-	parser.add_argument('--html_filename')
-	parser.add_argument('--main_container_width')
-	parser.add_argument('--main_container_height')
+	parser.add_argument('--export_info_json_path')
 	parser.add_argument('--is_preview', default="False")
 
 	parser.add_argument('--check_for_updates', action='store_true')
-	
-	#custom defined arguments
-	parser.add_argument('--clickTag', default="")
 	
 	args, unknown = parser.parse_known_args()
 	
@@ -162,17 +160,43 @@ def main():
 		sys.exit(0)
 
 
-	## --modify_staging_path [filepath] --destination_path [filepath] --html_filename [filename.html] --main_container_width [number] --main_container_height [number] --is_preview [True|False]
+	## --modify_staging_path [filepath] --destination_path [filepath] --export_info_json_path [filepath] --is_preview [True|False]
 	##		return True if you moved successfully to the destination_path, otherwise don't return anything and Hype will make the move
 	##		make any changes you'd like before the save is complete
 	##		for example, if you are a zip, you need to zip and write to the destination_path
 	##		or you may want to inject items into the HTML file
 	##		if it is a preview, you shouldn't do things like zip it up, as Hype needs to know where the index.html file is
+	##		export_info_json_path is a json object holding keys:
+	##			html_filename: string that is the filename for the html file which you may want to inject changes into
+	##			main_container_width: number representing the width of the document in pixels
+	##			main_container_height: number representing the height of the document in pixels
+	##			document_arguments: dictionary of key/value pairs based on what was passed in from the earlier --get_options call
+	##			extra_actions: array of dictionaries for all usages of the extra actions. There is no guarantee these all originated from this script or version.
+	##				function: string of function name (as passed in from --get_options)
+	##				arguments: array of strings
 	elif args.modify_staging_path != None:
 		import os
-		is_preview = bool(distutils.util.strtobool(args.is_preview))
+		import string
 		
-		index_path = os.path.join(args.modify_staging_path, args.html_filename)
+		is_preview = bool(distutils.util.strtobool(args.is_preview))
+
+		# read export_info.json file
+		export_info_file = open(args.export_info_json_path)
+		export_info = json.loads(export_info_file.read())
+		export_info_file.close()
+
+		# insert clickTag into head start
+		global insert_at_head_start
+		template = string.Template(insert_at_head_start)
+				
+		if "clickTag" in export_info["document_arguments"]:
+			click_tag = export_info["document_arguments"]["clickTag"]
+		else:
+			click_tag = ""
+
+		insert_at_head_start = template.substitute({"clickTag" : click_tag })
+		
+		index_path = os.path.join(args.modify_staging_path, export_info["html_filename"])
 		perform_html_additions(index_path)
 
 		import shutil

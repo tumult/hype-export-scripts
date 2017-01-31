@@ -88,9 +88,8 @@ insert_at_head_end = """
 		Enabler.stopTimer(identifier);
 	}
 	
-	function dummyInteractions() {
-		Enabler.exit("myexit1");
-		Enabler.exitOverride("myexit2", "http://thebest.com");
+	function hypeAdDummyInteractions() {
+		${dummy_interactions}
 	}
 		
 	</script>
@@ -98,6 +97,21 @@ insert_at_head_end = """
 
 insert_at_body_start = ""
 insert_at_body_end = ""
+
+function_name_mapping = { "hypeAdExit" : "Enabler.exit", "hypeAdCounter" : "Enabler.counter", "hypeAdStartTimer" : "Enabler.startTimer", "hypeAdStopTimer" : "Enabler.stopTimer" }
+def construct_dummy_interaction(function_name, arguments):	
+	if function_name in function_name_mapping:
+		replaced_function_name = function_name_mapping[function_name]
+	else:
+		return None
+	
+	# handle special case for hypeAdExit
+	if function_name == "hypeAdExit":
+		if len(arguments) >= 2:
+			replaced_function_name = "Enabler.exitOverride"
+			
+	return "" + replaced_function_name + "(" + ",".join(arguments) + ")"
+
 
 class HypeURLType:
 	Unknown = 0
@@ -116,9 +130,7 @@ def main():
 
 	parser.add_argument('--modify_staging_path')
 	parser.add_argument('--destination_path')
-	parser.add_argument('--html_filename')
-	parser.add_argument('--main_container_width')
-	parser.add_argument('--main_container_height')
+	parser.add_argument('--export_info_json_path')
 	parser.add_argument('--is_preview', default="False")
 
 	parser.add_argument('--check_for_updates', action='store_true')
@@ -211,31 +223,56 @@ def main():
 		sys.exit(0)
 
 
-	## --modify_staging_path [filepath] --destination_path [filepath] --html_filename [filename.html] --main_container_width [number] --main_container_height [number] --is_preview [True|False]
+	## --modify_staging_path [filepath] --destination_path [filepath] --export_info_json_path [filepath] --is_preview [True|False]
 	##		return True if you moved successfully to the destination_path, otherwise don't return anything and Hype will make the move
 	##		make any changes you'd like before the save is complete
 	##		for example, if you are a zip, you need to zip and write to the destination_path
 	##		or you may want to inject items into the HTML file
 	##		if it is a preview, you shouldn't do things like zip it up, as Hype needs to know where the index.html file is
+	##		export_info_json_path is a json object holding keys:
+	##			html_filename: string that is the filename for the html file which you may want to inject changes into
+	##			main_container_width: number representing the width of the document in pixels
+	##			main_container_height: number representing the height of the document in pixels
+	##			document_arguments: dictionary of key/value pairs based on what was passed in from the earlier --get_options call
+	##			extra_actions: array of dictionaries for all usages of the extra actions. There is no guarantee these all originated from this script or version.
+	##				function: string of function name (as passed in from --get_options)
+	##				arguments: array of strings	elif args.modify_staging_path != None:
 	elif args.modify_staging_path != None:
 		import os
 		import string
 		
 		is_preview = bool(distutils.util.strtobool(args.is_preview))
 		
-		# add in width/height into insert_at_head_start variable
+		# read export_info.json file
+		export_info_file = open(args.export_info_json_path)
+		export_info = json.loads(export_info_file.read())
+		export_info_file.close()
+				
+		# add in method to make Enabler faster and width/height into insert_at_head_start variable
 		global insert_at_head_start
 		template = string.Template(insert_at_head_start)
 		if is_preview:
 			rushEventsForPreview = '<script data-exports-type="dclk-quick-preview">studio.Enabler.setRushSimulatedLocalEvents(true);</script>';
 		else:
 			rushEventsForPreview = '';
+		insert_at_head_start = template.substitute({'width' : export_info['main_container_width'], 'height' : export_info['main_container_height'], "rushEventsForPreview" : rushEventsForPreview })
 		
-		insert_at_head_start = template.substitute({'width' : args.main_container_width, 'height' : args.main_container_height, "rushEventsForPreview" : rushEventsForPreview })
-		
-		index_path = os.path.join(args.modify_staging_path, args.html_filename)
+		# insert interactions for dummy code so it is picked up by ad parsers		
+		global insert_at_head_end
+		template = string.Template(insert_at_head_end)
+		dummy_interactions = ""
+		for actionInfo in export_info['extra_actions']:
+			dummy_interaction = construct_dummy_interaction(actionInfo["function"], actionInfo["arguments"])
+			if dummy_interaction == None:
+				continue
+			dummy_interactions = dummy_interactions + "\t\t" + dummy_interaction + ";\n"
+		insert_at_head_end = template.substitute({"dummy_interactions" : dummy_interactions})
+
+		# rewrite HTML file
+		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'])
 		perform_html_additions(index_path)
 
+		# move to final location and zip up if not a preview
 		import shutil
 		shutil.rmtree(args.destination_path, ignore_errors=True)
 		
