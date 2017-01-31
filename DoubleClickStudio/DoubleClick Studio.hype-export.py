@@ -127,7 +127,8 @@ def main():
 	parser.add_argument('--replace_url')
 	parser.add_argument('--url_type')
 	parser.add_argument('--is_reference', default="False")
-
+	parser.add_argument('--should_preload')
+	
 	parser.add_argument('--modify_staging_path')
 	parser.add_argument('--destination_path')
 	parser.add_argument('--export_info_json_path')
@@ -205,13 +206,16 @@ def main():
 		sys.exit(0)
 
 
-	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False]
-	##		return a dictionary with "url" and "is_reference" keys
+	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False]
+	##		return a dictionary with "url", "is_reference", and optional "should_preload" keys
 	##		if HypeURLType.ResourcesFolder, you can set the url to "." so there is no .hyperesources folder and everything
-	##		is placed nex to the .html file
+	##		is placed next to the .html file
+	##		should_preload may be None type in cases where it won't be used
 	elif args.replace_url != None:
 		url_info = {}
 		url_info['is_reference'] = bool(distutils.util.strtobool(args.is_reference))
+		if args.should_preload != None:
+			url_info['should_preload'] = bool(distutils.util.strtobool(args.should_preload))
 		
 		if int(args.url_type) == HypeURLType.ResourcesFolder:
 			url_info['url'] = "."
