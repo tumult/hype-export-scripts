@@ -103,7 +103,6 @@ def main():
 				"exportShouldIncludeTextContents" : False,
 				"exportShouldIncludePIE" : True,
 				"exportSupportInternetExplorer6789" : True,
-				#"initialSceneIndex" : 0,
 			}
 
 		def save_options():
