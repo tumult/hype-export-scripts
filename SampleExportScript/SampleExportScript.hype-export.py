@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+# 	SampleExportScript.hype-export.py
+#		Export Script example showing off all kinds of different features
+#		Generally, a good starting point to build your own
+#
+#		Installation, usage, and additional info: 
+#			http://tumult.com/hype/export-scripts/
+#
+#		MIT License
+#		Copyright (c) 2017 Tumult Inc.
+#
+
 import argparse
 import json
 import sys

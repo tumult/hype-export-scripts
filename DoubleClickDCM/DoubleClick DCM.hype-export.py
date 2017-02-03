@@ -1,5 +1,15 @@
 #!/usr/bin/python
 
+# 	DoubleClick DCM.hype-export.py
+#		Export Script for Tumult Hype to produce HTML5 ads for DoubleClick Campaign Manager (aka DCM, DoubleClick for Advertisers, DFA)
+#
+#		Installation, usage, and additional info: 
+#			http://tumult.com/hype/export-scripts/
+#
+#		MIT License
+#		Copyright (c) 2017 Tumult Inc.
+#
+
 import argparse
 import json
 import sys

@@ -1,5 +1,15 @@
 #!/usr/bin/python
 
+# 	Sizmek.hype-export.py
+#		Export Script for Tumult Hype to produce ads for Sizmek MDX
+#
+#		Installation, usage, and additional info: 
+#			http://tumult.com/hype/export-scripts/
+#
+#		MIT License
+#		Copyright (c) 2017 Tumult Inc.
+#
+
 import argparse
 import json
 import sys
