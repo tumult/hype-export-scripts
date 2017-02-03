@@ -48,6 +48,9 @@ class HypeURLType:
 
 def main():
 	parser = argparse.ArgumentParser()
+	parser.add_argument('--hype_version')
+	parser.add_argument('--hype_build')
+
 	parser.add_argument('--get_options', action='store_true')
 
 	parser.add_argument('--replace_url')
@@ -92,11 +95,13 @@ def main():
 	##				'type': string that is either "String" (will be quoted and escaped) or "Expression" (passed directly to function argument as-is)
 	if args.get_options:		
 		def export_options():
+			#cdnPath = "https://secure-ds.serving-sys.com/BurstingcachedScripts/libraries/hype/" + args.hype_build
+			
 			return {
 				"exportShouldInlineHypeJS" : False,
 				"exportShouldInlineDocumentLoader" : False,
 				"exportShouldUseExternalRuntime" : False,
-				#"exportExternalRuntimeURL" : "",
+				#"exportExternalRuntimeURL" : cdnPath,
 				"exportShouldSaveHTMLFile" : True,
 				"exportShouldNameAsIndexDotHTML" : True,
 				#"indexTitle" : "",

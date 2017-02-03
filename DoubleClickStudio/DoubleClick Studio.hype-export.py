@@ -122,6 +122,9 @@ class HypeURLType:
 
 def main():
 	parser = argparse.ArgumentParser()
+	parser.add_argument('--hype_version')
+	parser.add_argument('--hype_build')
+
 	parser.add_argument('--get_options', action='store_true')
 
 	parser.add_argument('--replace_url')
