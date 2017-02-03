@@ -92,6 +92,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--hype_version')
 	parser.add_argument('--hype_build')
+	parser.add_argument('--export_uid')
 
 	parser.add_argument('--get_options', action='store_true')
 
@@ -177,7 +178,7 @@ def main():
 		sys.exit(0)
 
 
-	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False]
+	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --export_uid [identifier]
 	##		return a dictionary with "url", "is_reference", and optional "should_preload" keys
 	##		if HypeURLType.ResourcesFolder, you can set the url to "." so there is no .hyperesources folder and everything
 	##		is placed next to the .html file
@@ -197,7 +198,7 @@ def main():
 		sys.exit(0)
 
 
-	## --modify_staging_path [filepath] --destination_path [filepath] --export_info_json_path [filepath] --is_preview [True|False]
+	## --modify_staging_path [filepath] --destination_path [filepath] --export_info_json_path [filepath] --is_preview [True|False] --export_uid [identifier]
 	##		return True if you moved successfully to the destination_path, otherwise don't return anything and Hype will make the move
 	##		make any changes you'd like before the save is complete
 	##		for example, if you are a zip, you need to zip and write to the destination_path
