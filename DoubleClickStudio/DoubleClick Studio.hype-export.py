@@ -216,8 +216,7 @@ def main():
 			"extra_actions" : extra_actions(),
 		}
 	
-		print json.dumps({"result" : options})
-		sys.exit(0)
+		exit_with_result(options)
 
 
 	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --export_uid [identifier]
@@ -236,8 +235,7 @@ def main():
 		else:
 			url_info['url'] = args.replace_url
 		
-		print json.dumps({"result" : url_info})
-		sys.exit(0)
+		exit_with_result(url_info)
 
 
 	## --modify_staging_path [filepath] --destination_path [filepath] --export_info_json_path [filepath] --is_preview [True|False] --export_uid [identifier]
@@ -295,11 +293,10 @@ def main():
 		
 		if is_preview == True:
 			shutil.move(args.modify_staging_path, args.destination_path)
-			print json.dumps({"result" : True})
+			exit_with_result(True)
 		else:
 			zip(args.modify_staging_path, args.destination_path)
-			print json.dumps({"result" : True})
-		sys.exit(0)
+			exit_with_result(True)
 
 	## --check_for_updates
 	##		return a dictionary with "url", "from_version", and "to_version" keys if there is an update, otherwise don't return anything and exit
@@ -320,11 +317,9 @@ def main():
 				subprocess.check_output(["defaults", "write", defaults_bundle_identifier, "last_check_timestamp", timestamp_now])
 				latest_script_version = int(urllib2.urlopen(version_info_url).read().strip())
 				if latest_script_version > current_script_version:
-					print json.dumps({"result" : {"url" : download_url, "from_version" : str(current_script_version), "to_version" : str(latest_script_version)}})
+					exit_with_result({"url" : download_url, "from_version" : str(current_script_version), "to_version" : str(latest_script_version)})
 		except:
 			pass
-
-		sys.exit(0)
 
 
 # HTML FILE MODIFICATION
@@ -356,6 +351,14 @@ def perform_html_additions(index_path):
 
 
 # UTILITIES
+
+# communicate info back to Hype
+# uses delimiter (20 equal signs) so any above printing doesn't interfere with json data
+def exit_with_result(result):
+	import sys
+	print "===================="
+	print json.dumps({"result" : result})
+	sys.exit(0)
 
 # from http://stackoverflow.com/questions/14568647/create-zip-in-python
 def zip(src, dst):
