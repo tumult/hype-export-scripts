@@ -149,7 +149,7 @@ def main():
 		exit_with_result(options)
 
 
-	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --export_uid [identifier]
+	## --replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --is_preview [True|False] --export_uid [identifier]
 	##		return a dictionary with "url", "is_reference", and optional "should_preload" keys
 	##		if HypeURLType.ResourcesFolder, you can set the url to "." so there is no .hyperesources folder and everything
 	##		is placed next to the .html file

@@ -123,7 +123,7 @@ print json.dumps({"result" : resulting_data_object})
 
 ### replace_url
 
-`--replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --export_uid [identifier]`
+`--replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --is_preview [True|False] --export_uid [identifier]`
 
 if `HypeURLType` is 4, (aka `ResourcesFolder`), you can set the url to `"."` so there is no .hyperesources folder and everything is placed next to the .html file.  Enumeration of types (in Python):
 
@@ -138,6 +138,11 @@ class HypeURLType:
 
 `should_preload` is an optional argument that may not be passed in if it does not apply to the resource type.
 
+`is_preview` indicates whether this was activated from the preview toolbar item, or via the export menu.
+
+`export_uid` is an identifier specific to the export that can be used to help keep state between calls, as `replace_url` may be called multiple times. This is the same identifier passed into `modify\_staging\_path`.
+
+
 **return** a dictionary with `'url'`, `'is_reference'`, and optional `'should_preload'` keys.
 
 
@@ -146,7 +151,9 @@ class HypeURLType:
 `--modify_staging_path [filepath] --destination_path [filepath] --export_info_json_path [filepath] --is_preview [True|False] --export_uid [identifier]`
 
 
-Make any changes you'd like before the save is complete.  For example, if you are a zip, you need to zip and write to the `destination_path`, or you may want to inject items into the HTML file.  If it is a preview, you shouldn't do things like zip it up, as Hype needs to know where the index.html file is located.
+Make any changes you'd like before the save is complete.  For example, if you are a zip, you need to zip and write to the `destination_path`, or you may want to inject items into the HTML file.  If it is a preview (`is_preview`), you shouldn't do things like zip it up, as Hype needs to know where the index.html file is located.
+
+`export_uid` is an identifier specific to the export and matches any earlier calls to `replace_url`.
 
 `export_info_json_path` is a file path to a json object you can read holding keys:
 
