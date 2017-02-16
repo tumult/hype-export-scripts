@@ -22,13 +22,13 @@
 
 Tumult Hype v3.6 introduced the feature of Export Scripts.  These are scripts called by Hype that can add an item in the **File > Export as HTML** menu and extend Hype's UI allowing automated modifications to the HTML5 content Hype produces.
 
-Often Hype is part of a workflow where its output may need to be manipulated before being published.  For example, ad-tech networks such as DoubleClick need specific JavaScripts referenced, meta annotations in the HTML head, cannot include some specific Hype resources, and the final file needs to be zipped.  Developers can build an Export Script to accomplish these tasks. The Export Script can then be distributed to other users.
+Often Hype is part of a workflow where its output may need to be manipulated before being published.  For example, ad-tech networks such as DoubleClick need specific JavaScripts referenced, meta annotations in the HTML head, cannot include some specific Hype resources, and the final file needs to be zipped.  Developers can build an Export Script to accomplish these tasks. It can then be distributed to other users to automate these workflows.
 
 ### Features
 
 * Add menu item entries to **File > Export as HTML**, **Advanced Export**, and optionally the **Preview** toolbar item.
 * Set values for export options (like those revealed in Advanced Export and a few others)
-* Alter resource URLs, where they are saved, if they are full URLs, and preloading
+* Alter resource URLs, where they are saved, if they are full URLs, and preloading settings
 * Perform modifications to the entire export folder and HTML files on the way out
 * Add variables within Hype's UI that will be passed to the script
 * Add custom actions in Hype's UI that will run javascript functions with arguments
@@ -224,6 +224,4 @@ It is the recommended starting point for any new scripts.
 
 You can distribute your own Export Scripts however you would like. Due to needing executable permissions, it is recommended that you encapsulate the script in a format that retains permissions, such as `.zip`, `.dmg`, or `.pkg`.  It is a good idea to include installation instructions, since it isn't straight forward and often a user's Library folder is hidden.
 
-If you feel the Export Script would be generally useful to a wide audience of Hype users, you are welcome to share it on the [forums](https://forums.tumult.com) or email [Tumult](mailto:contact@tumult.com) to see if it should be included on the main [Hype Export Scripts](http://tumult.com/hype/export-scripts/) page.
-
-
+If you feel the Export Script would be generally useful to a wide audience of Hype users, you are welcome to share it on the [forums](https://forums.tumult.com) or email [Tumult](mailto:contact@tumult.com) to see if it should be included on the main [Hype Export Scripts](http://tumult.com/hype/export-scripts/) page.  You are also welcome to fork this repository and submit pull requests for new scripts or changes to existing ones.
