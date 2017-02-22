@@ -17,7 +17,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 version_info_url = "http://static.tumult.com/hype/export-scripts/DoubleClickDCM/latest_script_version.txt" # only returns a version number
 download_url = "http://tumult.com/hype/export-scripts/DoubleClickDCM/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -29,57 +29,10 @@ insert_at_head_start = """
 	<script>
 		window.clickTag = "${clickTag}";
 	</script>
-	<script src="https://s0.2mdn.net/ads/studio/Enabler.js"></script>
-	${rushEventsForPreview}
 """
 
 insert_at_head_end = """
 	<script>
-	
-	(function () {
-		
-		var thisHypeDocument = null;
-	
-		function preInit() {
-			if (Enabler.isInitialized()) {
-				init();
-			} else {
-				Enabler.addEventListener(studio.events.StudioEvent.INIT, init);
-			}
-		}
-	
-		function init() {
-			// Polite loading
-			if (Enabler.isVisible()) {
-				show();
-			} else {
-				Enabler.addEventListener(studio.events.StudioEvent.VISIBLE, show);
-			}
-		}
-	
-		function show() {
-			if(thisHypeDocument != null) {
-				thisHypeDocument.showSceneNamed(thisHypeDocument.sceneNames()[0]);
-			}
-		}
-	
-		function hypeDocumentLoadCallback(hypeDocument, element, event) {
-			thisHypeDocument = hypeDocument;
-			if(!Enabler.isInitialized() || !Enabler.isVisible()) {
-				// don't load the Hype document until DoubleClick Enabler has loaded and is visible
-				return false;
-			} 
-			return true;
-		}
-
-		if("HYPE_eventListeners" in window === false) {
-			window.HYPE_eventListeners = Array();
-		}
-		window.HYPE_eventListeners.push({"type":"HypeDocumentLoad", "callback":hypeDocumentLoadCallback});
-	
-		window.addEventListener('load', preInit);
-
-	})();
 	
 	function hypeAdExit() {
 		window.open(window.clickTag, "_blank");
@@ -235,17 +188,12 @@ def main():
 		global insert_at_head_start
 		template = string.Template(insert_at_head_start)
 
-		if is_preview:
-			rushEventsForPreview = '<script data-exports-type="dclk-quick-preview">studio.Enabler.setRushSimulatedLocalEvents(true);</script>';
-		else:
-			rushEventsForPreview = '';
-
 		if "clickTag" in export_info["document_arguments"]:
 			click_tag = export_info["document_arguments"]["clickTag"]
 		else:
 			click_tag = ""
 
-		insert_at_head_start = template.substitute({'width' : export_info['main_container_width'], 'height' : export_info['main_container_height'], "rushEventsForPreview" : rushEventsForPreview, "clickTag" : click_tag })
+		insert_at_head_start = template.substitute({'width' : export_info['main_container_width'], 'height' : export_info['main_container_height'], "clickTag" : click_tag })
 		
 		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'])
 		perform_html_additions(index_path)
