@@ -227,6 +227,8 @@ It is the recommended starting point for any new scripts.
 
 * Hype's Application Scripts folder is recursively scanned, so if you have any needed resources you can store those with the script in a folder.
 
+* The script environment is different than running from the Terminal; for example the PATH may not include all your expected directories. A common issue would be if you are calling out to a tool installed via homebrew it may not be found.  In this case you should use the full path to the binary (`/usr/local/bin/the_tool`) or change the PATH variable to include your search directories.
+
 ## Publishing
 
 You can distribute your own Export Scripts however you would like. Due to needing executable permissions, it is recommended that you encapsulate the script in a format that retains permissions, such as `.zip`, `.dmg`, or `.pkg`.  It is a good idea to include installation instructions, since it isn't straight forward and often a user's Library folder is hidden.
