@@ -181,7 +181,7 @@ def main():
 			return {
 				"exportShouldInlineHypeJS" : True,
 				"exportShouldInlineDocumentLoader" : True,
-				"exportShouldUseExternalRuntime" : False,
+				#"exportShouldUseExternalRuntime" : False,
 				#"exportExternalRuntimeURL" : cdnPath,
 				"exportShouldSaveHTMLFile" : True,
 				"exportShouldNameAsIndexDotHTML" : True,
