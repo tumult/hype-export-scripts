@@ -36,6 +36,7 @@ insert_at_head_end = """
 	(function () {
 		
 		var thisHypeDocument = null;
+		var didLoadHypeDocument = false;
 	
 		function preInit() {
 			if(EB.isInitialized()) {
@@ -50,8 +51,9 @@ insert_at_head_end = """
 		}
 	
 		function show() {
-			if(thisHypeDocument != null) {
+			if(thisHypeDocument != null && didLoadHypeDocument == false) {
 				thisHypeDocument.showSceneNamed(thisHypeDocument.sceneNames()[0]);
+				didLoadHypeDocument = true;
 			}
 		}
 	
@@ -61,6 +63,7 @@ insert_at_head_end = """
 				// don't load the Hype document until Sizmek EBLoader has loaded
 				return false;
 			} 
+			didLoadHypeDocument = true;
 			return true;
 		}
 
