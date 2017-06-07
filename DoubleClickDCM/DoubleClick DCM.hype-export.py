@@ -104,7 +104,7 @@ def main():
 			return {
 				"exportShouldInlineHypeJS" : True,
 				"exportShouldInlineDocumentLoader" : True,
-				"exportShouldUseExternalRuntime" : False,
+				#"exportShouldUseExternalRuntime" : False,
 				#"exportExternalRuntimeURL" : "",
 				"exportShouldSaveHTMLFile" : True,
 				"exportShouldNameAsIndexDotHTML" : True,
