@@ -30,7 +30,7 @@ insert_at_head_start = """
 <!-- some stuff at head start 1 -->
 <!-- some stuff at head start 2 -->
 <script>
-	window.clickTag = "${clickTag}";
+	var clickTag = "${clickTag}";
 </script>
 """
 

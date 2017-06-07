@@ -27,7 +27,7 @@ defaults_bundle_identifier = "com.tumult.Hype2.hype-export.DoubleClickDCM"
 insert_at_head_start = """
 	<meta name="ad.size" content="width=${width},height=${height}">
 	<script>
-		window.clickTag = "${clickTag}";
+		var clickTag = "${clickTag}";
 	</script>
 """
 
@@ -35,7 +35,7 @@ insert_at_head_end = """
 	<script>
 	
 	function hypeAdExit() {
-		window.open(window.clickTag, "_blank");
+		window.open(clickTag, "_blank");
 	}
 	
 	</script>
