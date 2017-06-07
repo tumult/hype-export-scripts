@@ -192,6 +192,7 @@ def main():
 				"exportShouldIncludeTextContents" : False,
 				"exportShouldIncludePIE" : False,
 				"exportSupportInternetExplorer6789" : False,
+				"exportShouldSaveRestorableDocument" : False,
 			}
 
 		def save_options():
