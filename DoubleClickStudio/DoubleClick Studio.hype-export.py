@@ -71,11 +71,20 @@ insert_at_head_end = """
 			didLoadHypeDocument = true;
 			return true;
 		}
+		
+		function hypeDocumentResourceLoadCallback(hypeDocument, element, event) {
+			// a method to get the resource name from the URL
+			var resourceName = event.url.substr(event.url.lastIndexOf('/') + 1);
+			
+			// use the Enabler API so video will get the proper URLs
+			return Enabler.getUrl(resourceName);
+		}
 
 		if("HYPE_eventListeners" in window === false) {
 			window.HYPE_eventListeners = Array();
 		}
 		window.HYPE_eventListeners.push({"type":"HypeDocumentLoad", "callback":hypeDocumentLoadCallback});
+		window.HYPE_eventListeners.push({"type":"HypeResourceLoad", "callback":hypeDocumentResourceLoadCallback});
 	
 		window.addEventListener('load', preInit);
 
