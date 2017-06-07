@@ -17,7 +17,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 version_info_url = "http://static.tumult.com/hype/export-scripts/Sizmek/latest_script_version.txt" # only returns a version number
 download_url = "http://tumult.com/hype/export-scripts/Sizmek/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day

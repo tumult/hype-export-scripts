@@ -18,7 +18,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 4
+current_script_version = 5
 username = os.path.split(os.path.expanduser('~'))[-1]
 version_info_url = "http://localhost/~" + username + "/latest_script_version.txt" # only returns a version number
 download_url = "http://localhost/~" + username + "/" # gives a user info to download and install

@@ -17,7 +17,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 2
+current_script_version = 3
 version_info_url = "http://static.tumult.com/hype/export-scripts/DoubleClickDCM/latest_script_version.txt" # only returns a version number
 download_url = "http://tumult.com/hype/export-scripts/DoubleClickDCM/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
