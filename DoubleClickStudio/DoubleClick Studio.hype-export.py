@@ -36,6 +36,7 @@ insert_at_head_end = """
 	(function () {
 		
 		var thisHypeDocument = null;
+		var didLoadHypeDocument = false;
 	
 		function preInit() {
 			if (Enabler.isInitialized()) {
@@ -55,8 +56,9 @@ insert_at_head_end = """
 		}
 	
 		function show() {
-			if(thisHypeDocument != null) {
+			if(thisHypeDocument != null && didLoadHypeDocument == false) {
 				thisHypeDocument.showSceneNamed(thisHypeDocument.sceneNames()[0]);
+				didLoadHypeDocument = true;
 			}
 		}
 	
@@ -65,7 +67,8 @@ insert_at_head_end = """
 			if(!Enabler.isInitialized() || !Enabler.isVisible()) {
 				// don't load the Hype document until DoubleClick Enabler has loaded and is visible
 				return false;
-			} 
+			}
+			didLoadHypeDocument = true;
 			return true;
 		}
 
