@@ -17,7 +17,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 3
+current_script_version = 4
 version_info_url = "http://static.tumult.com/hype/export-scripts/DoubleClickDCM/latest_script_version.txt" # only returns a version number
 download_url = "http://tumult.com/hype/export-scripts/DoubleClickDCM/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -226,7 +226,8 @@ def main():
 			timestamp_now = subprocess.check_output(["date", "+%s"]).strip()
 			if (last_check_timestamp == None) or ((int(timestamp_now) - int(last_check_timestamp)) > minimum_update_check_duration_in_seconds):
 				subprocess.check_output(["defaults", "write", defaults_bundle_identifier, "last_check_timestamp", timestamp_now])
-				latest_script_version = int(urllib2.urlopen(version_info_url).read().strip())
+				request = urllib2.Request(version_info_url, headers={'User-Agent' : "Magic Browser"})
+				latest_script_version = int(urllib2.urlopen(request).read().strip())
 				if latest_script_version > current_script_version:
 					exit_with_result({"url" : download_url, "from_version" : str(current_script_version), "to_version" : str(latest_script_version)})
 		except:
