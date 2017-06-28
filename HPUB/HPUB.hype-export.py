@@ -17,7 +17,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 version_info_url = "http://static.tumult.com/hype/export-scripts/HPUB/latest_script_version.txt" # only returns a version number
 download_url = "http://tumult.com/hype/export-scripts/HPUB/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -37,10 +37,47 @@ book_json = """{
  	"url": "${url}",
  	"cover": "${cover_image}",
  	"contents": [
- 		"0001.html"
+ ${book_pages}
  	]
  }
 """
+
+insert_at_head_end = """
+
+<script>
+
+  function sceneLoadCallback(hypeDocument, element, event) {
+		var checkHash = function() { 
+			var hash = decodeURIComponent(window.location.hash.substring(1));
+			for(var i = 0; i < hypeDocument.sceneNames().length; i++) {
+				if(hypeDocument.sceneNames()[i] == hash) {
+					hypeDocument.showSceneNamed(hash);
+					break;
+				}
+			}
+		}; 
+
+		if (window.loadedHashLocation != true) { 
+			window.loadedHashLocation = true; 
+			checkHash(); 
+			window.onhashchange = checkHash; 
+		}
+
+		window.location.hash = "#" + encodeURIComponent(hypeDocument.currentSceneName());
+  }
+
+  if("HYPE_eventListeners" in window === false) {
+    window.HYPE_eventListeners = Array();
+  }
+  window.HYPE_eventListeners.push({"type":"HypeSceneLoad", "callback":sceneLoadCallback});
+
+</script>
+
+"""
+
+insert_at_head_start = ""
+insert_at_body_start = ""
+insert_at_body_end = ""
 
 
 class HypeURLType:
@@ -182,6 +219,8 @@ def main():
 		import string
 		import shutil
 		import datetime
+		import re
+		import urllib
 		
 		# read export_info.json file
 		export_info_file = open(args.export_info_json_path)
@@ -192,6 +231,31 @@ def main():
 		src_index_path = os.path.join(args.modify_staging_path, export_info["html_filename"])
 		dst_index_path = os.path.join(args.modify_staging_path, "0001.html")
 		shutil.move(src_index_path, dst_index_path)
+		
+		# rewrite HTML file
+		perform_html_additions(dst_index_path)
+		
+		# attempt to identify all scenes
+		src_js_folder = os.path.join(args.modify_staging_path, "assets", "js")
+		for file_name in os.listdir(src_js_folder):
+			if "_hype_generated_script.js" in file_name:
+				src_js_path = os.path.join(src_js_folder, file_name)
+				break
+
+		js_contents = None
+		with open(src_js_path, 'r') as target_file:
+			js_contents = target_file.read()
+			
+		if js_contents == None:
+			#todo: error handling
+			pass
+		
+		scene_regex = re.compile('\{n\:\"(.*?)\"\,')
+		scene_names = scene_regex.findall(js_contents)
+		
+		book_pages = ""
+		for scene_name in scene_names:
+			book_pages = book_pages + "\t\t\"0001.html#" + urllib.quote_plus(scene_name) + "\",\n"
 		
 		# assemble book.json
 		cover_image = ""
@@ -223,7 +287,7 @@ def main():
 
 		global book_json
 		template = string.Template(book_json)
-		book_json = template.substitute({"cover_image" : cover_image, "author" : author, "url" : url, "creation_date" : creation_date, "title" : title })
+		book_json = template.substitute({"cover_image" : cover_image, "author" : author, "url" : url, "creation_date" : creation_date, "title" : title, "book_pages" : book_pages })
 		
 		book_json_path = os.path.join(args.modify_staging_path, "book.json")
 		
@@ -254,7 +318,8 @@ def main():
 			timestamp_now = subprocess.check_output(["date", "+%s"]).strip()
 			if (last_check_timestamp == None) or ((int(timestamp_now) - int(last_check_timestamp)) > minimum_update_check_duration_in_seconds):
 				subprocess.check_output(["defaults", "write", defaults_bundle_identifier, "last_check_timestamp", timestamp_now])
-				latest_script_version = int(urllib2.urlopen(version_info_url).read().strip())
+				request = urllib2.Request(version_info_url, headers={'User-Agent' : "Magic Browser"})
+				latest_script_version = int(urllib2.urlopen(request).read().strip())
 				if latest_script_version > current_script_version:
 					exit_with_result({"url" : download_url, "from_version" : str(current_script_version), "to_version" : str(latest_script_version)})
 		except:
