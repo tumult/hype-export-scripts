@@ -7,8 +7,8 @@
 * [Installation and Naming](#installation-amp-naming)
 * [API Basics](#api-basics)
 * [API Reference](#api-reference)
-	* [get_options](#get_options)
-	* [replace_url](#replace_url)
+	* [get\_options](#get_options)
+	* [replace\_url](#replace_url)
 	* [modify\_staging\_path](#modify_staging_path)
 	* [check\_for\_updates](#check_for_updates)
 * [Debugging](#debugging)
@@ -88,11 +88,11 @@ print json.dumps({"result" : resulting_data_object})
 
 ## API Reference
 
-### get_options
+### get\_options
 
 `--get_options`
 
-**return** arguments to be presented in the Hype UI as a dictionary:
+**return** a JSON dictionary with the following keys to be presented in the Hype UI:
 
 ```
 'export_options' : dictionary # key/value pairs that make modifications to Hype's export/preview system. Some useful ones:
@@ -121,7 +121,7 @@ print json.dumps({"result" : resulting_data_object})
 ```
 
 
-### replace_url
+### replace\_url
 
 `--replace_url [url] --url_type [HypeURLType] --is_reference [True|False] --should_preload [None|True|False] --is_preview [True|False] --export_uid [identifier]`
 
@@ -140,10 +140,10 @@ class HypeURLType:
 
 `is_preview` indicates whether this was activated from the preview toolbar item, or via the export menu.
 
-`export_uid` is an identifier specific to the export that can be used to help keep state between calls, as `replace_url` may be called multiple times. This is the same identifier passed into `modify\_staging\_path`.
+`export_uid` is an identifier specific to the export that can be used to help keep state between calls, as `replace_url` may be called multiple times. This is the same identifier passed into `modify_staging_path`.
 
 
-**return** a dictionary with `'url'`, `'is_reference'`, and optional `'should_preload'` keys.
+**return** a JSON dictionary with `'url'`, `'is_reference'`, and optional `'should_preload'` keys.
 
 
 ### modify\_staging\_path
@@ -167,7 +167,7 @@ Make any changes you'd like before the save is complete.  For example, if you ar
 	'arguments' : array # of strings
 ```
 	
-**return** True if you moved successfully to the destination_path, otherwise don't return anything and Hype will make the move.
+**return** True if you moved successfully to the destination\_path, otherwise don't return anything and Hype will make the move.
 
 ### check\_for\_updates
 
@@ -175,7 +175,7 @@ Make any changes you'd like before the save is complete.  For example, if you ar
 
 This is presently called whenever an export is initiated, but that is subject to change. It isn't recommended you test against a server on each call; it is your responsibility to decide how often to check.
 
-**return** a dictionary with "url", "from_version", and "to_version" keys if there is an update, otherwise don't return anything and exit.
+**return** a JSON dictionary with "url", "from\_version", and "to\_version" keys if there is an update, otherwise don't return anything and exit.
 
 ## Debugging
 
