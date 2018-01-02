@@ -187,7 +187,7 @@ In the course of developing an Export Script, you may be curious to get better v
 
 *Or, if you are using a beta version of Hype, you must use this command:*
 
-`defaults write com.tumult.Beta.Hype2 enableExportScriptDebugLogging -bool YES`
+`defaults write com.tumult.Beta.Hype4 enableExportScriptDebugLogging -bool YES`
 
 You can then view the output by running this command in the Terminal (Sierra):
 
