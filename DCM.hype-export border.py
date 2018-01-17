@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#       THIS VERSION (2) IS EDITED BY MARK HUNTE  05-01-2018  - This Version offers the option to add a border around the scene container.
+#       THIS VERSION (2.01) IS EDITED BY MARK HUNTE  05-01-2018  - This Version offers the option to add a border around the scene container.
 #
 #       THIS VERSION is derived from [DoubleClick DCM.hype-export.py
 #		Export Script for Tumult Hype to produce HTML5 ads for DoubleClick Campaign Manager (aka DCM, DoubleClick for Advertisers, DFA)
@@ -218,7 +218,7 @@ def main():
 		
 			
 			if  "pixel_size" in export_info["document_arguments"] and "style" in export_info["document_arguments"]  and "colour" in export_info["document_arguments"]:
-				Scene_Border = "<style>[id=\""+ hype_generated1 + "_hype_container\"]" + "{ border: " + export_info["document_arguments"]["pixel_size"] +  "px " + export_info["document_arguments"]["style"]  +  " " + export_info["document_arguments"]["colour"] + ";}</style>"
+				Scene_Border = "<style>[id=\""+ hype_generated1 + "_hype_container\"]" + "{ border: " + export_info["document_arguments"]["pixel_size"] +  "px " + export_info["document_arguments"]["style"]  +  " " + export_info["document_arguments"]["colour"] + ";box-sizing : border-box;}</style>"
 				
 				
 		       
