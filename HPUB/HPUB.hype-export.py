@@ -255,7 +255,7 @@ def main():
 		
 		book_pages = ""
 		for scene_name in scene_names:
-			book_pages = book_pages + "\t\t\"0001.html#" + urllib.quote_plus(scene_name) + "\",\n"
+			book_pages = book_pages + "\t\t\"0001.html#" + urllib.quote(scene_name) + "\",\n"
 		
 		# assemble book.json
 		cover_image = ""
