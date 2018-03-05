@@ -42,6 +42,7 @@ book_json = """{
  }
 """
 
+# this may not be used in single_page mode
 insert_at_head_end = """
 
 <script>
@@ -157,7 +158,7 @@ def main():
 			}
 	
 		def document_arguments():
-			return ["Cover Image", "Author", "URL"];
+			return ["Cover Image", "Author", "URL", "Single Page"];
 		
 		options = {
 			"export_options" : export_options(),
@@ -227,12 +228,22 @@ def main():
 		export_info = json.loads(export_info_file.read())
 		export_info_file.close()
 
+		is_single_page = False
+		if "Single Page" in export_info["document_arguments"]:
+			singe_page_string = export_info["document_arguments"]["Single Page"].lower()
+			if (len(singe_page_string) > 0) and (singe_page_string[0] == "1" or singe_page_string[0] == "t" or singe_page_string[0] == "y"):
+				is_single_page = True
+
 		# move the "index.html" to "0001.html" as this is just the first page
 		src_index_path = os.path.join(args.modify_staging_path, export_info["html_filename"])
 		dst_index_path = os.path.join(args.modify_staging_path, "0001.html")
 		shutil.move(src_index_path, dst_index_path)
 		
 		# rewrite HTML file
+		if is_single_page == True:
+			global insert_at_head_end
+			insert_at_head_end = ""
+			
 		perform_html_additions(dst_index_path)
 		
 		# attempt to identify all scenes
@@ -254,8 +265,11 @@ def main():
 		scene_names = scene_regex.findall(js_contents)
 		
 		book_pages = ""
-		for scene_name in scene_names:
-			book_pages = book_pages + "\t\t\"0001.html#" + urllib.quote(scene_name) + "\",\n"
+		if is_single_page == True:
+			book_pages = book_pages + "\t\t\"0001.html\"\n"
+		else:
+			for scene_name in scene_names:
+				book_pages = book_pages + "\t\t\"0001.html#" + urllib.quote(scene_name) + "\",\n"			
 		
 		# assemble book.json
 		cover_image = ""
