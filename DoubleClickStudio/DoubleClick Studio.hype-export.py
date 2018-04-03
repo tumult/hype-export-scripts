@@ -4,7 +4,7 @@
 #		Export Script for Tumult Hype to produce Rich Media (DCRM) ads for DoubleClick Studio
 #
 #		Installation, usage, and additional info: 
-#			http://tumult.com/hype/export-scripts/
+#			https://tumult.com/hype/export-scripts/
 #
 #		MIT License
 #		Copyright (c) 2017 Tumult Inc.
@@ -18,8 +18,8 @@ import os
 
 # update info
 current_script_version = 3
-version_info_url = "http://static.tumult.com/hype/export-scripts/DoubleClickStudio/latest_script_version.txt" # only returns a version number
-download_url = "http://tumult.com/hype/export-scripts/DoubleClickStudio/" # gives a user info to download and install
+version_info_url = "https://static.tumult.com/hype/export-scripts/DoubleClickStudio/latest_script_version.txt" # only returns a version number
+download_url = "https://tumult.com/hype/export-scripts/DoubleClickStudio/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
 defaults_bundle_identifier = "com.tumult.Hype2.hype-export.DoubleClickStudio"
 

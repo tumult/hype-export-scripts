@@ -5,7 +5,7 @@
 #		Generally, a good starting point to build your own
 #
 #		Installation, usage, and additional info: 
-#			http://tumult.com/hype/export-scripts/
+#			https://tumult.com/hype/export-scripts/
 #
 #		MIT License
 #		Copyright (c) 2017 Tumult Inc.
