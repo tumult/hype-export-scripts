@@ -101,7 +101,8 @@ print json.dumps({"result" : resulting_data_object})
 	'exportShouldUseExternalRuntime' : boolean
 	'exportExternalRuntimeURL' : string
 	'exportShouldSaveHTMLFile' : boolean
-	'indexTitle' : string
+	'indexTitle' : string # represents the <title> tag
+	'exportShouldNameAsIndexDotHTML' : boolean
 	'exportShouldBustBrowserCaching' : boolean
 	'exportShouldIncludeTextContents' : boolean
 	'exportShouldIncludePIE' : boolean
