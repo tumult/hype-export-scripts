@@ -164,6 +164,8 @@ def main():
 			"export_options" : export_options(),
 			"save_options" : save_options(),
 			"document_arguments" : document_arguments(),
+			"min_hype_build_version" : "574", # build number (ex "574") and *not* marketing version (ex "3.6.0")
+			#"max_hype_build_version" : "10000", # build number (ex "574") and *not* marketing version (ex "3.6.0")
 		}
 	
 		exit_with_result(options)
