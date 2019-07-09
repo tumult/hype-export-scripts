@@ -55,9 +55,9 @@ Often Hype is part of a workflow where its output may need to be manipulated bef
 * Export Scripts are installed by the user in the Application Scripts folder for Hype. This folder is dependent on how the user obtained Hype:
 
 ```
-    Tumult Store & Mac App Store: ~/Library/Application Scripts/com.tumult.Hype2/
+    Tumult Store & Mac App Store: ~/Library/Application Scripts/com.tumult.Hype4/
     Setapp: ~/Library/Application Scripts/com.tumult.hype-setapp/
-    Beta: ~/Library/Application Scripts/com.tumult.Beta.Hype2/
+    Beta: ~/Library/Application Scripts/com.tumult.Beta.Hype4/
 ```
 
 Hype's Export preference pane offers a button for the user to easily go to this folder.  If the script successfully meets the above points, it will show up in the list in this pane.
@@ -184,7 +184,7 @@ This is presently called whenever an export is initiated, but that is subject to
 
 In the course of developing an Export Script, you may be curious to get better visibility into what is being passed to your Script, and the output that Hype sees.  You can enable Hype to log via enabling this default:
 
-`defaults write com.tumult.Hype2 enableExportScriptDebugLogging -bool YES`
+`defaults write com.tumult.Hype4 enableExportScriptDebugLogging -bool YES`
 
 *Or, if you are using a beta version of Hype, you must use this command:*
 
