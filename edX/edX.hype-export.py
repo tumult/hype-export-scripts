@@ -18,7 +18,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 username = os.path.split(os.path.expanduser('~'))[-1]
 version_info_url = "https://static.tumult.com/hype/export-scripts/edX/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/edX/" # gives a user info to download and install
@@ -27,38 +27,27 @@ defaults_bundle_identifier = "com.tumult.Hype4.hype-export.edX"
 
 
 # html insertions
-insert_at_head_start = """
-<!-- some stuff at head start 1 -->
-<!-- some stuff at head start 2 -->
-<script>
+insert_at_head_start = ""
 
-window.HYPE_eventListeners = ("HYPE_eventListeners" in window === false) ? Array() : window.HYPE_eventListeners;
-window.HYPE_eventListeners.push({"type":"HypeResourceLoad", "callback": (function (hypeDocument, element, event) {
-	var originalURL = event.url;
-	var resourceName = originalURL.substring(originalURL.lastIndexOf('/') + 1);
-	var edXAssetURL = "${edx_asset_url}";
-	var documentNamePrefix = "${document_name}"
-	return (edXAssetURL + documentNamePrefix + "-" + resourceName);
-})});
-
-
-</script>
-"""
-
-insert_at_head_end = """
-<!-- some stuff at head end 1 -->
-<!-- some stuff at head end 2 -->
-"""
+insert_at_head_end = ""
 
 insert_at_body_start = """
-<!-- some stuff at body start 1 -->
-<!-- some stuff at body start 2 -->
+	<script>
+
+	window.HYPE_eventListeners = ("HYPE_eventListeners" in window === false) ? Array() : window.HYPE_eventListeners;
+	window.HYPE_eventListeners.push({"type":"HypeResourceLoad", "callback": (function (hypeDocument, element, event) {
+		var originalURL = event.url;
+		var resourceName = originalURL.substring(originalURL.lastIndexOf('/') + 1);
+		var edXAssetURL = "${edx_asset_url}";
+		var documentNamePrefix = "${document_name}"
+		return (edXAssetURL + documentNamePrefix + "-" + resourceName);
+	})});
+
+
+	</script>
 """
 
-insert_at_body_end = """
-<!-- some stuff at body end 1 -->
-<!-- some stuff at body end 2 -->
-"""
+insert_at_body_end = ""
 
 
 class HypeURLType:
@@ -118,10 +107,10 @@ def main():
 	##				'type': string that is either "String" (will be quoted and escaped) or "Expression" (passed directly to function argument as-is)
 	if args.get_options:		
 		def export_options():
-			cdnPath = "https://cdn.jsdelivr.net/gh/tumult/hype-runtime"
+			cdnPath = "${edx_asset_url}"
 			
 			return {
-				"exportShouldInlineHypeJS" : False,
+				"exportShouldInlineHypeJS" : True,
 				"exportShouldInlineDocumentLoader" : False,
 				"exportShouldUseExternalRuntime" : True,
 				"exportExternalRuntimeURL" : cdnPath,
@@ -168,6 +157,8 @@ def main():
 		
 		if int(args.url_type) == HypeURLType.ResourcesFolder:
 			url_info['url'] = "."
+		elif int(args.url_type) == HypeURLType.HypeJS:
+			url_info['url'] = "${edx_asset_url}" + args.replace_url
 		else:
 			url_info['url'] = args.replace_url
 				
@@ -199,10 +190,6 @@ def main():
 		export_info = json.loads(export_info_file.read())
 		export_info_file.close()
 
-		# insert clickTag into head start
-		global insert_at_head_start
-		template = string.Template(insert_at_head_start)
-				
 		if "Asset URL" in export_info["document_arguments"]:
 			edx_asset_url = export_info["document_arguments"]["Asset URL"]
 		else:
@@ -210,20 +197,21 @@ def main():
 
 		document_name = os.path.splitext(export_info["html_filename"])[0]
 	
-		insert_at_head_start = template.substitute({"edx_asset_url" : edx_asset_url, "document_name" : document_name })
-		
 		index_path = os.path.join(args.modify_staging_path, export_info["html_filename"])
-		perform_html_additions(index_path)
+
+		perform_html_additions(index_path)		
+		perform_html_substitutions(index_path, {"edx_asset_url" : edx_asset_url, "document_name" : document_name })
+		perform_custom_html_substution(index_path, "./%24%7Bedx_asset_url%7D", edx_asset_url)
 		
 		for filename in os.listdir(args.modify_staging_path):
 			if filename == export_info["html_filename"]:
 				continue
-			elif filename.endswith("hype_generated_script.js"):
-				continue
 			elif filename.startswith("HYPE") and filename.endswith("js"):
 				continue
-				
-			new_filename = document_name + "-" + filename
+			elif filename.endswith("hype_generated_script.js"):
+				new_filename = filename.replace("${edx_asset_url}", "")
+			else:
+				new_filename = document_name + "-" + filename
 			os.rename(os.path.join(args.modify_staging_path, filename), os.path.join(args.modify_staging_path, new_filename))
 
 		import shutil
@@ -258,6 +246,40 @@ def main():
 
 
 # HTML FILE MODIFICATION
+
+def perform_custom_html_substution(index_path, search_string, replace_string):
+	import string
+
+	index_contents = None
+	with open(index_path, 'r') as target_file:
+		index_contents = target_file.read()
+		
+	if index_contents == None:
+		return
+		
+	template = string.Template(index_contents)
+	index_contents = index_contents.replace(search_string, replace_string)
+
+	with open(index_path, 'w') as target_file:
+		target_file.write(index_contents)	
+
+
+def perform_html_substitutions(index_path, substitions):
+	import string
+
+	index_contents = None
+	with open(index_path, 'r') as target_file:
+		index_contents = target_file.read()
+		
+	if index_contents == None:
+		return
+		
+	template = string.Template(index_contents)
+	index_contents = template.substitute(substitions)
+
+	with open(index_path, 'w') as target_file:
+		target_file.write(index_contents)
+	
 
 def perform_html_additions(index_path):
 	index_contents = None
