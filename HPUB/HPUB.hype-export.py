@@ -237,7 +237,7 @@ def main():
 				is_single_page = True
 
 		# move the "index.html" to "0001.html" as this is just the first page
-		src_index_path = os.path.join(args.modify_staging_path, export_info["html_filename"])
+		src_index_path = os.path.join(args.modify_staging_path, export_info["html_filename"].encode("utf-8"))
 		dst_index_path = os.path.join(args.modify_staging_path, "0001.html")
 		shutil.move(src_index_path, dst_index_path)
 		
@@ -279,8 +279,8 @@ def main():
 			cover_image = export_info["document_arguments"]["Cover Image"]
 
 			# copy to root level
-			src_cover_image_path = os.path.join(args.modify_staging_path, "assets", "images", cover_image)
-			dst_cover_image_path = os.path.join(args.modify_staging_path, cover_image)
+			src_cover_image_path = os.path.join(args.modify_staging_path, "assets", "images", cover_image.encode("utf-8"))
+			dst_cover_image_path = os.path.join(args.modify_staging_path, cover_image.encode("utf-8"))
 			shutil.copy(src_cover_image_path, dst_cover_image_path)
 			
 		author = ""

@@ -18,7 +18,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 6
+current_script_version = 7
 username = os.path.split(os.path.expanduser('~'))[-1]
 version_info_url = "http://localhost/~" + username + "/latest_script_version.txt" # only returns a version number
 download_url = "http://localhost/~" + username + "/" # gives a user info to download and install
@@ -216,7 +216,7 @@ def main():
 
 		insert_at_head_start = template.substitute({"clickTag" : click_tag })
 		
-		index_path = os.path.join(args.modify_staging_path, export_info["html_filename"])
+		index_path = os.path.join(args.modify_staging_path, export_info["html_filename"].encode("utf-8"))
 		perform_html_additions(index_path)
 
 		import shutil

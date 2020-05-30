@@ -17,7 +17,7 @@ import distutils.util
 import os
  
 # update info
-current_script_version = 1
+current_script_version = 2
 version_info_url = "https://static.tumult.com/hype/export-scripts/AdWords/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/AdWords/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -171,7 +171,7 @@ def main():
 		insert_at_head_start = template.substitute({'width' : export_info['main_container_width'], 'height' : export_info['main_container_height'] })
 		
 		# rewrite HTML file
-		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'])
+		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'].encode("utf-8"))
 		perform_html_additions(index_path)
 
 		# move to final location and zip up if not a preview

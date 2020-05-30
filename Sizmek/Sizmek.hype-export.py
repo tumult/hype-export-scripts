@@ -17,7 +17,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 3
+current_script_version = 4
 version_info_url = "https://static.tumult.com/hype/export-scripts/Sizmek/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/Sizmek/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -289,7 +289,7 @@ def main():
 		insert_at_head_end = template.substitute({"dummy_interactions" : dummy_interactions})
 
 		# rewrite HTML file
-		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'])
+		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'].encode("utf-8"))
 		perform_html_additions(index_path)
 
 		# move to final location and zip up if not a preview
