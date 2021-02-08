@@ -108,6 +108,11 @@ print json.dumps({"result" : resulting_data_object})
 	'exportShouldIncludePIE' : boolean
 	'exportSupportInternetExplorer6789' : boolean
 	'initialSceneIndex' : integer
+	'exportShouldIncludePosterImage' : boolean # Requires Hype 4.0.0 (648) or later.
+	'exportPosterImageSettings' : dictionary # not used if exportShouldIncludePosterImage is False. Requires Hype 4.0.0 (648) or later.
+		'exportName' : string # represents the filename (without extension) of the poster image
+		'format' : string # can be one of: "gif", "png", or "jpg"
+		'resolution' : string # can be "@1x" or "@2x" to specify non-retina or retina.
 'save_options' : dictionary # key/value pairs that for determining when/how to export. valid keys:
 	'file_extension' : string # the final extension when exported (ex. "zip")
 	'allows_export' : boolean # should show up in the File > Export as HTML5 menu and Advanced Export
@@ -163,9 +168,11 @@ Make any changes you'd like before the save is complete.  For example, if you ar
 'main_container_width' : number # representing the width of the document in pixels
 'main_container_height' : number # representing the height of the document in pixels
 'document_arguments' : dictionary # of key/value pairs based on what was passed in from the earlier --get_options call
+'all_document_arguments_by_export_script' : dictionary of dictionaries # document_arguments for every export script, incuding this one. The script name is the main key. Requires Hype 4.1.5 (728) or later.
 'extra_actions' : array # of dictionaries for all usages of the extra actions. There is no guarantee these all originated from this script or version.
 	'function' : string # function name (as passed in from --get_options)
 	'arguments' : array # of strings
+'hype_document_path' : string # the file path to the .hype document. If the document has not been saved, this will not exist. Requires Hype 4.0.0 (648) or later.
 ```
 	
 **return** True if you moved successfully to the destination\_path, otherwise don't return anything and Hype will make the move.
