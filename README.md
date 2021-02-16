@@ -168,7 +168,6 @@ Make any changes you'd like before the save is complete.  For example, if you ar
 'main_container_width' : number # representing the width of the document in pixels
 'main_container_height' : number # representing the height of the document in pixels
 'document_arguments' : dictionary # of key/value pairs based on what was passed in from the earlier --get_options call
-'all_document_arguments_by_export_script' : dictionary of dictionaries # document_arguments for every export script, incuding this one. The script name is the main key. Requires Hype 4.1.5 (728) or later.
 'extra_actions' : array # of dictionaries for all usages of the extra actions. There is no guarantee these all originated from this script or version.
 	'function' : string # function name (as passed in from --get_options)
 	'arguments' : array # of strings
