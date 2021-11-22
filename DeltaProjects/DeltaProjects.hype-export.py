@@ -43,10 +43,10 @@ insert_at_head_start = """
 	<meta name="ad.size" content="width=${width},height=${height}">
 	
 <script type="text/javascript">
-  try{ $$preamble$$ }catch(e){}
-  if (typeof(window.HTML5) == 'undefined') {
-	var p = 'https:' == document.location.protocol ? 'https:' : 'http:';
-	document.write('<scr'+'ipt src="' + p + '//sting.de17a.com/html5.js"></scr'+'ipt>');
+  try{ $$$$preamble$$$$ }catch(e){}
+  if (typeof(window.HTML5) == "undefined") {
+    var p = "https:" == document.location.protocol ? "https:" : "http:";
+    document.write("<scr"+"ipt src=\\\""+p+"//sting.de17a.com/html5.js\\\"></scr"+"ipt>");
   } else { window.HTML5.boot(window, window.Sting); }
 </script>
 
