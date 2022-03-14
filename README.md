@@ -4,7 +4,7 @@
 	* [Features](#features)
 	* [Things you could do with Export Scripts](#things-you-could-do-with-export-scripts)
 * [User Resources](#user-resources)
-* [Installation and Naming](#installation-amp-naming)
+* [Installation and Naming](#installation-and-naming)
 * [API Basics](#api-basics)
 * [API Reference](#api-reference)
 	* [get\_options](#get_options)
@@ -17,6 +17,12 @@
 * [Examples](#examples)
 * [Tips](#tips)
 * [Publishing](#publishing)
+* [Python](#python)
+	* [Python-based Export Scripts](#python-based-export-scripts)
+	* [Python Export Script Enabler](#python-export-script-enabler)
+	* [Using your own installation of Python](#using-your-own-installation-of-python)
+	* [Distributing your Python-based export script](#distributing-your-python-based-export-script)
+
 
 ## Overview
 
@@ -41,15 +47,17 @@ Often Hype is part of a workflow where its output may need to be manipulated bef
 * Insert default javascripts into the head HTML or make other HTML modifications
 * Define asset folder structures (use img,css,js, etc. instead of .hyperesources)
 
+
 ## User Resources
 
 * Get Export Scripts: [https://tumult.com/hype/export-scripts/](https://tumult.com/hype/export-scripts/)
-* Documentation: [https://tumult.com/hype/documentation/3.0/#export-scripts](https://tumult.com/hype/documentation/3.0/#export-scripts)
+* Documentation: [https://tumult.com/hype/documentation/4.0/#export-scripts](https://tumult.com/hype/documentation/4.0/#export-scripts)
 
 
 ## Installation and Naming
 
 * Export Scripts must have an extension recognizable as a script (`.sh`, `.py`, `.rb`, etc.).
+	* *Note: If your export script is written in python, please see [more information](#python) below*
 * Export Scripts must have `hype-export` within their filename to, for example: `DoubleClickStudio.hype-export.py`.
 * Export Scripts must have permissions set as executable: `chmod 755 [filename]`
 * Export Scripts are installed by the user in the Application Scripts folder for Hype. This folder is dependent on how the user obtained Hype:
@@ -85,6 +93,7 @@ The output must be printed to stdout in JSON format as a dictionary with a `"res
 ```
 print json.dumps({"result" : resulting_data_object})
 ```
+
 
 ## API Reference
 
@@ -184,6 +193,7 @@ This is presently called whenever an export is initiated, but that is subject to
 
 **return** a JSON dictionary with "url", "from\_version", and "to\_version" keys if there is an update, otherwise don't return anything and exit.
 
+
 ## Debugging
 
 ### Seeing arguments and capturing output
@@ -221,7 +231,7 @@ def exit_with_result(result):
 
 ## Examples
 
-There is a full example showing usage of all APIs and providing some utilitiy functions here:
+There is a full example showing usage of all APIs and providing some utility functions here:
 
 [SampleExportScript.hype-export.py](https://github.com/tumult/hype-export-scripts/blob/master/SampleExportScript/SampleExportScript.hype-export.py)
 
@@ -236,8 +246,59 @@ It is the recommended starting point for any new scripts.
 
 * The script environment is different than running from the Terminal; for example the PATH may not include all your expected directories. A common issue would be if you are calling out to a tool installed via homebrew it may not be found.  In this case you should use the full path to the binary (`/usr/local/bin/the_tool`) or change the PATH variable to include your search directories.
 
+
 ## Publishing
 
 You can distribute your own Export Scripts however you would like. Due to needing executable permissions, it is recommended that you encapsulate the script in a format that retains permissions, such as `.zip`, `.dmg`, or `.pkg`.  It is a good idea to include installation instructions, since it isn't straight forward and often a user's Library folder is hidden.
 
 If you feel the Export Script would be generally useful to a wide audience of Hype users, you are welcome to share it on the [forums](https://forums.tumult.com) or email [Tumult](mailto:contact@tumult.com) to see if it should be included on the main [Hype Export Scripts](https://tumult.com/hype/export-scripts/) page.  You are also welcome to fork this repository and submit pull requests for new scripts or changes to existing ones.
+
+
+## Python
+
+### Python-based Export Scripts
+
+While Export Scripts can be written in any programming language that can read command-line arguments, most export scripts including the [primary example](#examples) are written using the [Python](https://www.python.org) programming language. More specifically, they use the version 2 language variant. Python is relatively easy to learn, read, and provides a supple standard library of functionality.
+
+Python has long been part of macOS, being part of the base operating system installation since Mac OS X 10.2 in the year 2002. This allowed for a dependable high-level language for writing Export Scripts.  Unfortunately, **Apple has removed Python from macOS 12.3 and later**.  This means that any Python-based Export Scripts will not work out-of-the-box. To help remedy this, Tumult has created the [Python Export Script Enabler](#python-export-script-enabler).
+
+### Python Export Script Enabler
+
+The Python Export Script Enabler is a package that will re-enable Python Export Scripts to work again. It does this by:
+
+* Installing the Python 2.7.18 programming language in `/Library/Application Support/Hype/python/`
+* Installing a `python_enabler.sh` shell script in `~/Library/Application Scripts/com.tumult.Hype4/` that acts as a trampoline to run Export Scripts through this custom Python installation
+* Using **Hype 4.1.8** and later to call this trampoline instead of the Export Script directly so it runs on the working Python installation
+
+You can download the installer package from:
+
+[https://tumult.com/hype/export-scripts/python-enabler/](https://tumult.com/hype/export-scripts/python-enabler/)
+
+Practically speaking, you do not need to worry much about how the Python Export Script Enabler works; once installed any Python-based Export Scripts should automatically start working again.
+
+### Using your own installation of Python
+
+Most export scripts use the absolute path shebang of `#!/usr/bin/python`, which is detected by the Python Export Script Enabler and then trampolined to the installation in `/Library/Application Support/Hype/python/{version}/bin/python`.  Commonly, the `env` tool is used to lookup a path for Python when you do your own installation.  Unfortunately, if your Export Script uses like `#!/usr/bin/env python` it likely will not work as expected, as the macOS Application Script environment is minimal and does not run through shell initialization scripts that may properly populate your `PATH` to correctly to locate Python (see [Tips](#tips)).
+
+There are two options available to correct for this:
+
+1. Use an absolute path to your own Python installation in the shebang for your export script.  This will require any other users of your Export Script to have Python installed there as well.
+
+2. Or, you can use this Terminal command to instruct the Hype and the Python Export Script Enabler to use a different path:
+	```
+	defaults write com.tumult.Hype4 exportScriptPythonPath "/usr/local/bin/python"
+	```
+	(Of course, replace the Python path with whatever is appropriate)
+	To reset back to defaults, use this command:
+	```
+	defaults delete com.tumult.Hype4 exportScriptPythonPath
+	```
+
+### Distributing your Python-based export script
+
+If users are on Hype v4.1.8 or later and try to run a Python-based Export Script, the Hype application will warn users they need to install the Python Export Script Enabler. As such, you can generally rely on this mechanism to inform users on what to do, but it is probably a good idea to document Hype v4.1.8+ and provide the link ([https://tumult.com/hype/export-scripts/python-enabler/](https://tumult.com/hype/export-scripts/python-enabler/)) to download the Python Export Script Enabler.
+
+Because Export Scripts themselves are not straightforward to install, you may wish to or already provide an Installer package that properly places them in `~/Library/Application Scripts/com.tumult.Hype4/` and applies proper execute permissions. For example, Tumult does this for its Export Scripts on their [information page](https://tumult.com/hype/export-scripts). This makes installation a breeze. We have augmented these Installer packages by also including the Python Export Script Enabler package.  Therefore, only a single package is required and it places both the Export Script and Python dependency on the system at the same time to avoid two different installs.  You are granted permission to likewise include the Python Export Script Enabler package in your installs.
+
+The basic way to build a package like this is to use the `productbuild` command-line tool and supply paths to both your Export Script installer package and the Python Export Script Enabler package with the `--package pkg-path` command line argument.  This new "product" package must still be signed and notarized.
+
