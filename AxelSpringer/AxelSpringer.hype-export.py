@@ -189,7 +189,7 @@ def main():
 		export_info = json.loads(export_info_file.read())
 		export_info_file.close()
 				
-		# add in clickTag, width/height into insert_at_head_start variable
+		# add in width/height into insert_at_head_start variable
 		global insert_at_head_start
 		template = string.Template(insert_at_head_start)
 
