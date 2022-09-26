@@ -27,6 +27,13 @@ defaults_bundle_identifier = "com.tumult.Hype2.hype-export.IABPoliteAd"
 # html insertions
 insert_at_head_start = """
 	<meta name="ad.size" content="width=${width},height=${height}">
+	<style>
+		a.HYPE_document {
+			display:block;
+			text-decoration: none;
+			color: text;
+		}
+	</style>
 	<script>
 		var getUriParams = function () {
 			var query_string = {}
