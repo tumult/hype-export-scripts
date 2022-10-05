@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-# 	AxelSpringer DCM.hype-export.py
+# 	AxelSpringer.hype-export.py
 #		Export Script for Tumult Hype to produce HTML5 ads for Axel Springer Verlag
 #
 #		Installation, usage, and additional info: 
