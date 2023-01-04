@@ -19,7 +19,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 version_info_url = "https://static.tumult.com/hype/export-scripts/AppNexus/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/AppNexus/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -35,20 +35,11 @@ insert_at_head_start = """
 insert_at_head_end = ""
 
 insert_at_body_start = """
-<div class="container" id="clickthrough">
+<a href="javascript:void(0)" onClick="window.open(APPNEXUS.getClickTag(), '_blank');">
 """
 
 insert_at_body_end = """
-</div>
-<script type="text/javascript">
-	APPNEXUS.ready(function () {
-	  var clickthrough = document.getElementById("clickthrough");
-
-	  clickthrough.addEventListener("click", function () {
-		APPNEXUS.click();
-	  });
-	});
-</script>
+</a>
 """
 
 class HypeURLType:
