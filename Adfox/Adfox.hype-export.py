@@ -205,10 +205,7 @@ def main():
 		if int(args.url_type) == HypeURLType.ResourcesFolder:
 			url_info['url'] = "."
 		else:
-			if args.replace_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.svg', '.psd', '.pdf')):
-				url_info['url'] = "images/" + args.replace_url
-			else:
-				url_info['url'] = args.replace_url
+			url_info['url'] = args.replace_url
 		
 		exit_with_result(url_info)
 
