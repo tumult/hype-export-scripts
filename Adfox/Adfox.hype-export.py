@@ -206,6 +206,7 @@ def main():
 			url_info['url'] = "."
 		else:
 			url_info['url'] = args.replace_url
+			url_info['is_reference'] = True
 		
 		exit_with_result(url_info)
 
