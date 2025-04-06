@@ -184,6 +184,14 @@ def main():
 		index_path = os.path.join(args.modify_staging_path, export_info['html_filename'].encode("utf-8"))
 		perform_html_additions(index_path)
 
+		# remove console usage (replace with "bonsole" which shouldn't exist)
+		remove_console_usage(index_path)
+		for root, _, files in os.walk(args.modify_staging_path):
+			for file in files:
+				if file.startswith("HYPE") and file.endswith(".js"):
+					file_path = os.path.join(root, file)
+					remove_console_usage(file_path)
+
 		import shutil
 		shutil.rmtree(args.destination_path, ignore_errors=True)
 		
@@ -220,6 +228,21 @@ def main():
 
 
 # HTML FILE MODIFICATION
+
+def remove_console_usage(file_path):
+	file_contents = None
+	with open(file_path, 'r') as target_file:
+		file_contents = target_file.read()
+		
+	if file_contents == None:
+		return
+		
+	import re
+	file_contents = re.sub(r'\.console', '.bonsole', file_contents)
+
+	with open(file_path, 'w') as target_file:
+		target_file.write(file_contents)
+
 
 def perform_html_additions(index_path):
 	index_contents = None
