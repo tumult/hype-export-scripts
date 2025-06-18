@@ -40,7 +40,7 @@ insert_at_head_start = """
 	<meta name="ad.size" content="width=${width},height=${height}">
 	<script src="https://adsby.bidtheatre.com/js/asxhtml5.min.js"></script>
 	<script>
-		var clickTag = asxhtml5.getParam('clickTag', '${clickTag}');
+		var clickTag = asxhtml5.getParam('clickurl', '${clickTag}');
 	</script>
 """
 
