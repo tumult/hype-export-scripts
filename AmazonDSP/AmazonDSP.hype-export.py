@@ -3,6 +3,9 @@
 # 	AmazonDSP.hype-export.py
 #		Export Script for Tumult Hype to produce HTML5 ads for Amazon DSP
 #
+#		Based on info at:
+#			https://advertising.amazon.co.uk/help/GKRGHAMF3RU99DP3
+#
 #		Installation, usage, and additional info: 
 #			https://tumult.com/hype/export-scripts/
 #
@@ -17,7 +20,7 @@ import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 version_info_url = "https://static.tumult.com/hype/export-scripts/AmazonDSP/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/AmazonDSP/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -26,6 +29,7 @@ defaults_bundle_identifier = "com.tumult.Hype2.hype-export.AmazonDSP"
 # html insertions
 insert_at_head_start = """
 	<meta name="ad.size" content="width=${width},height=${height}">
+	<script type="text/javascript" src="https://adkit-advertising.amazon/sdk/SDKLoader.js" />
 	<script>
 		var clickTag = "${clickTag}";
 	</script>
@@ -35,7 +39,7 @@ insert_at_head_end = """
 	<script>
 	
 	function hypeAdExit() {
-		window.open(clickTag, "_blank");
+		SDK.clickThrough();
 	}
 	
 	</script>
@@ -103,7 +107,7 @@ def main():
 		def export_options():
 			return {
 				"exportShouldInlineHypeJS" : True,
-				"exportShouldInlineDocumentLoader" : True,
+				"exportShouldInlineDocumentLoader" : False,
 				#"exportShouldUseExternalRuntime" : False,
 				#"exportExternalRuntimeURL" : "",
 				"exportShouldSaveHTMLFile" : True,
@@ -156,9 +160,12 @@ def main():
 		
 		if int(args.url_type) == HypeURLType.ResourcesFolder:
 			url_info['url'] = "."
-			pass
 		elif (int(args.url_type) == HypeURLType.HypeJS):
-			pass
+			filename = args.replace_url;
+			if filename.endswith('_hype_generated_script.js') == True:
+				url_info['url'] = "index.js"
+			else:
+				url_info['url'] = filename
 		elif (int(args.url_type) == HypeURLType.Resource):
 			#images
 			if args.replace_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.svg', '.psd', '.pdf')):
@@ -172,6 +179,9 @@ def main():
 			#js
 			elif args.replace_url.lower().endswith(('.js', '.jsx', '.coffee', '.map', '.ts', '.htc')):
 				url_info['url'] = "js/" + args.replace_url
+			#fonts
+			elif args.replace_url.lower().endswith(('.eot', '.woff', '.ttf')):
+				url_info['url'] = "fonts/" + args.replace_url
 			#everything else
 			else:
 				url_info['url'] = args.replace_url
