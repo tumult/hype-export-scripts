@@ -12,13 +12,14 @@
 #
 
 import argparse
+import codecs
 import json
 import sys
 import distutils.util
 import os
 
 # update info
-current_script_version = 2
+current_script_version = 3
 version_info_url = "https://static.tumult.com/hype/export-scripts/IABPoliteAd/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/IABPoliteAd/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -234,7 +235,7 @@ def main():
 		
 		# replace <div> with <a>, and remove the script src
 		index_contents = None
-		with open(index_path, 'r') as target_file:
+		with codecs.open(index_path, 'r', encoding='utf-8') as target_file:
 			index_contents = target_file.read()
 		
 		import re
@@ -245,7 +246,7 @@ def main():
 		document_loader_script_regex = re.compile(r"<script.*_hype_generated_script\.js.*</script>", re.MULTILINE|re.IGNORECASE)
 		index_contents = document_loader_script_regex.sub("", index_contents)
 		
-		with open(index_path, 'w') as target_file:
+		with codecs.open(index_path, 'w', encoding='utf-8') as target_file:
 			target_file.write(index_contents)
 		
 		# add in width/height into insert_at_head_start variable
@@ -295,7 +296,7 @@ def main():
 
 def perform_html_additions(index_path):
 	index_contents = None
-	with open(index_path, 'r') as target_file:
+	with codecs.open(index_path, 'r', encoding='utf-8') as target_file:
 		index_contents = target_file.read()
 		
 	if index_contents == None:
@@ -315,7 +316,7 @@ def perform_html_additions(index_path):
 		body_end = re.search("</body", index_contents, re.IGNORECASE).start()
 		index_contents = index_contents[:body_end] + insert_at_body_end + index_contents[body_end:]
 
-	with open(index_path, 'w') as target_file:
+	with codecs.open(index_path, 'w', encoding='utf-8') as target_file:
 		target_file.write(index_contents)
 
 

@@ -12,13 +12,14 @@
 #
 
 import argparse
+import codecs
 import json
 import sys
 import distutils.util
 import os
 
 # update info
-current_script_version = 1
+current_script_version = 2
 username = os.path.split(os.path.expanduser('~'))[-1]
 version_info_url = "https://static.tumult.com/hype/export-scripts/OrganizedAssets/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/OrganizedAssets/" # gives a user info to download and install

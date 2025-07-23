@@ -12,13 +12,14 @@
 #
 
 import argparse
+import codecs
 import json
 import sys
 import distutils.util
 import os
 
 # update info
-current_script_version = 7
+current_script_version = 8
 username = os.path.split(os.path.expanduser('~'))[-1]
 version_info_url = "http://localhost/~" + username + "/latest_script_version.txt" # only returns a version number
 download_url = "http://localhost/~" + username + "/" # gives a user info to download and install
@@ -259,7 +260,7 @@ def main():
 
 def perform_html_additions(index_path):
 	index_contents = None
-	with open(index_path, 'r') as target_file:
+	with codecs.open(index_path, 'r', encoding='utf-8') as target_file:
 		index_contents = target_file.read()
 		
 	if index_contents == None:
@@ -279,7 +280,7 @@ def perform_html_additions(index_path):
 		body_end = re.search("</body", index_contents, re.IGNORECASE).start()
 		index_contents = index_contents[:body_end] + insert_at_body_end + index_contents[body_end:]
 
-	with open(index_path, 'w') as target_file:
+	with codecs.open(index_path, 'w', encoding='utf-8') as target_file:
 		target_file.write(index_contents)
 
 

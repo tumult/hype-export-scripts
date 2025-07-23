@@ -13,13 +13,14 @@
 #
 
 import argparse
+import codecs
 import json
 import sys
 import distutils.util
 import os
 
 # update info
-current_script_version = 3
+current_script_version = 4
 version_info_url = "https://static.tumult.com/hype/export-scripts/AppNexus/latest_script_version.txt" # only returns a version number
 download_url = "https://tumult.com/hype/export-scripts/AppNexus/" # gives a user info to download and install
 minimum_update_check_duration_in_seconds = 60 * 60 * 24 # once a day
@@ -231,7 +232,7 @@ def main():
 
 def remove_console_usage(file_path):
 	file_contents = None
-	with open(file_path, 'r') as target_file:
+	with codecs.open(file_path, 'r', encoding='utf-8') as target_file:
 		file_contents = target_file.read()
 		
 	if file_contents == None:
@@ -240,13 +241,13 @@ def remove_console_usage(file_path):
 	import re
 	file_contents = re.sub(r'\.console', '.bonsole', file_contents)
 
-	with open(file_path, 'w') as target_file:
+	with codecs.open(file_path, 'w', encoding='utf-8') as target_file:
 		target_file.write(file_contents)
 
 
 def perform_html_additions(index_path):
 	index_contents = None
-	with open(index_path, 'r') as target_file:
+	with codecs.open(index_path, 'r', encoding='utf-8') as target_file:
 		index_contents = target_file.read()
 		
 	if index_contents == None:
@@ -266,7 +267,7 @@ def perform_html_additions(index_path):
 		body_end = re.search("</body", index_contents, re.IGNORECASE).start()
 		index_contents = index_contents[:body_end] + insert_at_body_end + index_contents[body_end:]
 
-	with open(index_path, 'w') as target_file:
+	with codecs.open(index_path, 'w', encoding='utf-8') as target_file:
 		target_file.write(index_contents)
 
 
